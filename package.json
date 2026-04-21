@@ -1,0 +1,49 @@
+{
+  "name": "wxgame-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for driving WeChat Mini-GAME DevTools — launch/reuse IDE, screenshot, tap, evaluate, perf, engine introspection.",
+  "type": "module",
+  "bin": {
+    "wxgame-mcp": "./dist/bundle.mjs"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist/bundle.mjs",
+    "dist/index.js",
+    "dist/**/*.js",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "bundle": "node esbuild.config.mjs",
+    "prepublishOnly": "pnpm build && pnpm bundle",
+    "smoke:launch": "node --loader tsx smoke/launch.ts",
+    "smoke:e2e": "node --loader tsx smoke/e2e.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "miniprogram-automator": "^0.11.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "esbuild": "^0.24.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  },
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "wechat",
+    "minigame",
+    "wxgame",
+    "devtools",
+    "automator",
+    "claude"
+  ],
+  "license": "MIT"
+}
