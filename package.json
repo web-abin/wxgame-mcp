@@ -1,7 +1,7 @@
 {
   "name": "wxgame-mcp",
-  "version": "0.1.0",
-  "description": "MCP server for driving WeChat Mini-GAME DevTools — launch/reuse IDE, screenshot, tap, evaluate, perf, engine introspection.",
+  "version": "0.2.0",
+  "description": "MCP server for driving WeChat Mini-GAME DevTools — launch/reuse IDE, screenshot, tap, evaluate, perf, network capture/mock, ad/audio trackers, PIXI introspection.",
   "type": "module",
   "bin": {
     "wxgame-mcp": "./dist/bundle.mjs"

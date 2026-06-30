@@ -5,7 +5,7 @@ import { ALL_TOOLS, TOOL_BY_NAME } from './tools/index.js'
 import { log } from './util/log.js'
 
 const server = new Server(
-  { name: 'wxgame-mcp', version: '0.1.0' },
+  { name: 'wxgame-mcp', version: '0.2.0' },
   { capabilities: { tools: {} } },
 )
 
@@ -26,6 +26,10 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
   }
   try {
     const result = await tool.handler(args)
+    // handler 可返回 { __mcp_content: [...] } 来直接给出 MCP content（如截图内联 image）
+    if (result && typeof result === 'object' && Array.isArray((result as any).__mcp_content)) {
+      return { content: (result as any).__mcp_content }
+    }
     return { content: [{ type: 'text', text: typeof result === 'string' ? result : JSON.stringify(result, null, 2) }] }
   } catch (e) {
     const err = e as Error

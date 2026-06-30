@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { ToolDef } from './types.js'
 import { getMp } from '../devtools/session.js'
@@ -27,12 +27,14 @@ export const runtimeTools: ToolDef[] = [
   },
   {
     name: 'wxgame_screenshot',
-    description: '截当前模拟器画面，写到本地 PNG 并返回绝对路径。',
+    description:
+      '截当前模拟器画面，写到本地 PNG 并返回绝对路径。inline=true 时同时把 PNG 作为 MCP image content 内联返回 —— LLM 可直接"看到"画面。',
     inputSchema: {
       type: 'object',
       properties: {
         fullPage: { type: 'boolean', description: '是否截整个画布；默认 true' },
         outPath: { type: 'string', description: '指定输出路径；默认写到 ~/.wxgame-mcp/cache/shots/<timestamp>.png' },
+        inline: { type: 'boolean', description: '把 PNG 内容作为 MCP image content 直接返回，让 LLM 真正"看到"。默认 false（只返路径）' },
       },
     },
     handler: async (args) => {
@@ -44,6 +46,15 @@ export const runtimeTools: ToolDef[] = [
       // 某些版本 screenshot 返回 Buffer（没写 path 时），写一下
       if (res instanceof Buffer) {
         writeFileSync(outPath, res)
+      }
+      if (args?.inline) {
+        const buf = readFileSync(outPath)
+        return {
+          __mcp_content: [
+            { type: 'image', data: buf.toString('base64'), mimeType: 'image/png' },
+            { type: 'text', text: JSON.stringify({ path: outPath, bytes: buf.length }) },
+          ],
+        }
       }
       return { path: outPath }
     },
